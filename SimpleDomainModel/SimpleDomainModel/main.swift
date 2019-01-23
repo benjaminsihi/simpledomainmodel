@@ -79,65 +79,77 @@ open class Job {
     }
 }
 
-//////////////////////////////////////
-//// Person
-////
-//open class Person {
-//    open var firstName : String = ""
-//    open var lastName : String = ""
-//    open var age : Int = 0
+////////////////////////////////////
+// Person
 //
-//    fileprivate var _job : Job? = nil
-//    open var job : Job? {
-//        get { }
-//        set(value) {
-//        }
-//    }
-//  
-//    fileprivate var _spouse : Person? = nil
-//    open var spouse : Person? {
-//        get {
-//            return spouse
-//        }
-//        set(value) {
-//        }
-//    }
-//  
-//    public init(firstName : String, lastName: String, age : Int) {
-//        self.firstName = firstName
-//        self.lastName = lastName
-//        self.age = age
-//    }
-//  
-//    open func toString() -> String {
-//    }
-//}
+open class Person {
+    open var firstName : String = ""
+    open var lastName : String = ""
+    open var age : Int = 0
+
+    fileprivate var _job : Job? = nil
+    open var job : Job? {
+        get {
+            return self._job
+        }
+        set(value) {
+            if self.age > 18 {
+                self._job = value
+            }
+        }
+    }
+  
+    fileprivate var _spouse : Person? = nil
+    open var spouse : Person? {
+        get {
+            return self._spouse
+        }
+        set(value) {
+            if self.age > 18 {
+                self._spouse = value
+            }
+        }
+    }
+  
+    public init(firstName : String, lastName: String, age : Int) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.age = age
+    }
+  
+    open func toString() -> String {
+        return "[Person: firstName:\(self.firstName) lastName:\(self.lastName) age:\(self.age) job:\(String(describing: self._job?.type)) spouse:\(String(describing: self._spouse))]"
+    }
+}
+
+////////////////////////////////////
+// Family
 //
-//////////////////////////////////////
-//// Family
-////
-//open class Family {
-//    fileprivate var members : [Person] = []
-//  
-//    public init(spouse1: Person, spouse2: Person) {
-//        
-//    }
-//  
-//    open func haveChild(_ child: Person) -> Bool {
-//        if members[0].age < 21 && members[1].age < 21 {
-//            return false
-//        }
-//        return true
-//    }
-//  
-//    open func householdIncome() -> Int {
-//        var result : Int = 0
-//        if members[0]._job != nil {
-//            result += members[0]._job!.calculateIncome(2000)
-//        }
-//        if members[1]._job != nil {
-//            result += members[1]._job!.calculateIncome(2000)
-//        }
-//        return result
-//    }
-//}
+open class Family {
+    fileprivate var members : [Person] = []
+  
+    public init(spouse1: Person, spouse2: Person) {
+        if spouse1._spouse == nil && spouse2._spouse == nil {
+            spouse1._spouse = spouse2
+            spouse2._spouse = spouse1
+        }
+    }
+  
+    open func haveChild(_ child: Person) -> Bool {
+        if members[0].age < 21 && members[1].age < 21 {
+            return false
+        }
+        return true
+    }
+  
+    open func householdIncome() -> Int {
+        var result : Int = 0
+        if members[0]._job != nil {
+            result += members[0]._job!.calculateIncome(2000)
+        }
+        if members[1]._job != nil {
+            result += members[1]._job!.calculateIncome(2000)
+        }
+        return result
+    }
+}
